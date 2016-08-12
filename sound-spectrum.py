@@ -5,7 +5,9 @@ import numpy as np
 import pyaudio
 import random
 import opc
+import math
 from time import sleep
+
 
 SAVE = 0.0
 TITLE = ''
@@ -23,6 +25,28 @@ n_LEDs = 150
 
 current_colors = [255, 255, 255]
 color_speed = [8, 16, 32]
+cur_color = [0, 0, 0]
+
+color_change_interval = 100
+color_change_count = [0]
+
+def sin_color(LED, offset):
+    color_change_count[0] += 1
+    color_change_count[0] %= color_change_interval
+    if color_change_count[0]:
+        return cur_color
+    pt = ((float(offset + LED)%n_LEDs)/n_LEDs)*2*math.pi
+    sin_ratio = (math.sin(pt) + 1.0)/2.0
+    cos_ratio = (math.cos(pt) + 1.0)/2.0
+    increase = random.randint(1,130)
+    color = random.choice(['r', 'g', 'b'])
+    if color == 'r':
+        cur_color[0] = (cur_color[0] + increase) % 256
+    elif color == 'g':
+        cur_color[1] = (cur_color[1] + increase) % 256
+    else:
+        cur_color[2] = (cur_color[2] + increase) % 256
+    return cur_color
 
 nPulses = 3
 
@@ -53,7 +77,8 @@ def animate(stream, MAX_y):
   result = []
   for m, i in enumerate(np.arange(0, len(Y), len(Y)/float(n_LEDs))):
     level = (Y[int(i)]/10.0)
-    result.append((int(current_colors[0]*level), int(level*current_colors[1]), int(level*current_colors[2])))
+    r, g, b = sin_color(i, 0)
+    result.append((int(r * level), int(g * level), int(b * level)))
     for i, color in enumerate(current_colors):
         if color_speed[i] + color >= 256 or color_speed[i] + color <= 0:
             color_speed[i] = -color_speed[i]

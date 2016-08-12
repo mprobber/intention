@@ -69,6 +69,8 @@ class Client(object):
 
         self._socket = None  # will be None when we're not connected
 
+        self._leds_per_strip = leds_per_strip
+
 	self._light_strips = np.zeros((strips, leds_per_strip, 3), dtype=np.uint8)
 
     def _debug(self, m):
@@ -141,7 +143,7 @@ class Client(object):
         LED at a time (unless it's the first one).
 
         """
-        for i, (r, g, b) in enumerate(pixels):
+        for i, (r, g, b) in enumerate(pixels[:self._leds_per_strip]):
 	    self._light_strips[strip][i][0] = min(255, max(0, int(r)))
             self._light_strips[strip][i][1] = min(255, max(0, int(g)))
             self._light_strips[strip][i][2] = min(255, max(0, int(b)))
