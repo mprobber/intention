@@ -53,9 +53,13 @@ def flushing_thread():
                     my_results[led_number][2] + b
                 )
         client.put_pixels(24, my_results)
-        sleep(1.0/100.0)
+        sleep(1.0/50.0)
 
 p = Pulse(1.0/20.0, (0, 100, 0), 8)
+p = Pulse(1.0/10.0, (0, 100, 0), 8)
+p = Pulse(1.0/15.0, (0, 100, 0), 8)
+p = Pulse(1.0/30.0, (0, 100, 0), 8)
+p = Pulse(1.0/25.0, (0, 100, 0), 8)
 flush = Thread(target=flushing_thread)
 flush.daemon = True
 flush.start()
