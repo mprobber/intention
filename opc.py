@@ -44,6 +44,10 @@ class Client(object):
         server_ip_port should be an ip:port or hostname:port as a single string.
         For example: '127.0.0.1:7890' or 'localhost:7890'
 
+        strips:  The number of strips connected to your beaglebone
+
+        leds_per_strip: the number of LEDs on each strip
+
         There are two connection modes:
         * In long connection mode, we try to maintain a single long-lived
           connection to the server.  If that connection is lost we will try to
@@ -121,9 +125,7 @@ class Client(object):
     def put_pixels(self, strip, pixels):
         """Send the list of pixel colors to the OPC server on the given channel.
 
-        channel: Which strand of lights to send the pixel colors to.
-            Must be an int in the range 0-255 inclusive.
-            0 is a special value which means "all channels".
+        strip: Which strand of lights to send the pixel colors to.
 
         pixels: A list of 3-tuples representing rgb colors.
             Each value in the tuple should be in the range 0-255 inclusive. 
@@ -146,30 +148,15 @@ class Client(object):
             self._light_strips[strip][i][1] = min(255, max(0, int(g)))
             self._light_strips[strip][i][2] = min(255, max(0, int(b)))
 
-        return self.put_pixels_np(self._light_strips)
+        return self._put_pixels_np(self._light_strips)
 
-    def put_pixels_np(self, pixels, channel=0):
-        """Send the list of pixel colors to the OPC server on the given channel.
+    def _put_pixels_np(self, pixels, channel=0):
+        """
+        Sends a numpy array as an OPC command on a given channel,
 
-        channel: Which strand of lights to send the pixel colors to.
-            Must be an int in the range 0-255 inclusive.
-            0 is a special value which means "all channels".
+        pixels: a numpy array of pixels for each strip connected
 
-        pixels: A list of 3-tuples representing rgb colors.
-            Each value in the tuple should be in the range 0-255 inclusive. 
-            For example: [(255, 255, 255), (0, 0, 0), (127, 0, 0)]
-            Floats will be rounded down to integers.
-            Values outside the legal range will be clamped.
-
-        Will establish a connection to the server as needed.
-
-        On successful transmission of pixels, return True.
-        On failure (bad connection), return False.
-
-        The list of pixel colors will be applied to the LED string starting
-        with the first LED.  It's not possible to send a color just to one
-        LED at a time (unless it's the first one).
-
+        channel: what cahnnel to send the pixels on.  for LEDscape, it's always 0
         """
         self._debug('put_pixels: connecting')
         is_connected = self._ensure_connected()
