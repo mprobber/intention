@@ -15,3 +15,8 @@ With lots of help!  The opc client is based off of [@zestyping's opc client](htt
 We used a beaglebone, LEDscape, and the disorient microcontroller to drive many LED strips at once.  The opc client is written to assume you're using the same setup.
 
 [Learn more about intention!](https://www.indiegogo.com/projects/intention-burning-man-2016-art)
+
+##How to run the software
+1. Copy the files to the Beaglebone
+2. Run ```python run_animations.py``` in the Terminal
+3. Make sure the USB mic is plugged in, otherwise software maybe will not run!
