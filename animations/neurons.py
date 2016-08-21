@@ -13,11 +13,11 @@ class Pulse(BaseAnimation):
         while True:
             r, g, b = self.color
             self.strip.clear()
-            for tail in xrange(8):
+            for tail in xrange(16):
                 my_index = (self.location - tail) % self.n_leds
                 self.strip[my_index] = (r, g, b)
-                r = r / 1.5
-                g = g / 1.5
-                b = b / 1.5
+                r = r / 1.1
+                g = g / 1.1
+                b = b / 1.1
             self.location = (self.location + 1) % self.n_leds
             sleep(self.speed)

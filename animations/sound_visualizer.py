@@ -12,6 +12,7 @@ RATE = 44100
 
 class SoundVisualizer(BaseAnimation):
     def __init__(self, *args, **kwargs):
+
         super(SoundVisualizer, self).__init__(*args, **kwargs)
         p = pyaudio.PyAudio()
         self.MAX_y = 2.0 ** (p.get_sample_size(FORMAT) * 8 - 1)
@@ -19,13 +20,16 @@ class SoundVisualizer(BaseAnimation):
         self.colors = kwargs.get('colors') or [255, 255, 255]
         self.color_speed = kwargs.get('color_speed') or [8, 16, 32]
 
-        self.stream = p.open(
+	try:
+          self.stream = p.open(
             format=FORMAT,
             channels=CHANNELS,
             rate=RATE,
             input=True,
             frames_per_buffer=1 * nFFT
-        )
+          )
+        except:
+          print ("***failed to init sound viz")
 
     def run(self):
         while True:

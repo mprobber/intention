@@ -33,6 +33,7 @@ Recommended use:
 
 """
 
+from time import sleep
 import socket
 import numpy as np
 
@@ -64,6 +65,9 @@ class Client(object):
         If verbose is True, the client will print debugging info to the console.
 
         """
+
+        self.testStripId = 5
+
         self.verbose = verbose
 
         self._long_connection = long_connection
@@ -143,10 +147,36 @@ class Client(object):
         LED at a time (unless it's the first one).
 
         """
+	result = []
         for i, (r, g, b) in enumerate(pixels):
-	    self._light_strips[strip][i][0] = min(255, max(0, int(r)))
-            self._light_strips[strip][i][1] = min(255, max(0, int(g)))
-            self._light_strips[strip][i][2] = min(255, max(0, int(b)))
+	   result.append((min(255, max(0, int(r))), min(255, max(0, int(g))), min(255, max(0, int(b)))))
+
+	# results are 10, 12, 24
+        # ********************************************************************************************************************************************
+	# **************************THIS IS WHERE THE STRIPS ARE DEFINED!!!
+	# ******************************************************************************************************************************************** 
+
+       # LED test stript to find the right output numbers
+       # self.testStripId = 11
+       # self._light_strips[self.testStripId] = np.array(result)
+       # print "strip #"
+       # print self.testStripId
+       # print '/n'
+       # sleep(1)
+       # self.testStripId += 1
+       # return self._put_pixels_np(self._light_strips)
+
+        
+        self._light_strips[10] = np.array(result)
+        
+        #output 12 goes to strip 5
+        self._light_strips[12] = np.array(result)
+        
+        #output 24
+        self._light_strips[24] = np.array(result)
+        
+        #the fourth output 11, plugged into strip 6 
+        self._light_strips[11] = np.array(result)
 
         return self._put_pixels_np(self._light_strips)
 
